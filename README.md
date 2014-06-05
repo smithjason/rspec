@@ -75,6 +75,12 @@ Model's create method when passed valid/invalid params
 Data that fail validations
 Class/Instance methods expected performance
 
+
+each spec requires this require
+```ruby
+require 'spec_helper'
+```
+
 Four Best Practices
 ```bash
 - Describes a set of expectations
@@ -82,3 +88,54 @@ Four Best Practices
 - Each it is explicit
 - Each it description begins with a verb, not should
 ```
+
+be_valid matcher
+```ruby
+model = Model.new(params: value)
+expect(model).to be_valid
+```
+
+### Testing Validations
+
+.to have().errors_on()
+```ruby
+expect(Model.new(param: nil)).to have(1).errors_on(:param)
+```
+allows you to simply test validations on specific parameters
+
+### Testing Instance Methods
+
+.to eq(value)
+```ruby
+expect(model.method).to eq(value)
+```
+
+### Testing Class Methods and Scopes
+happy example
+```ruby
+expect(Model.method(param)).to eq(expected_return)
+```
+
+failing example
+```ruby
+expect(Model.method(param)).to_not include(instance_variable)
+```
+
+### Before
+code contained in before block runs before each example within the describe block it's in
+```ruby
+before :each do
+  stuff
+end
+```
+:each is the default behavior of before
+
+### After
+
+code contained in an after block runs after each example within the describe block it's in
+
+
+# Chapter 4 - Generating Test Data with Factories
+
+
+
