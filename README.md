@@ -135,7 +135,89 @@ end
 code contained in an after block runs after each example within the describe block it's in
 
 
-# Chapter 4 - Generating Test Data with Factories
+## Chapter 4 - Generating Test Data with Factories
+
+### FactoryGirl 
+
+FactoryGirl define method 
+```ruby
+FactoryGirl.define do
+  factory :contact do
+    firstname "John"
+    lastname "Doe"
+    sequence(:email) { |n| "johndoe#{n}@example.com" }
+  end
+end
+```
+This makes it so that whenever we use *FactoryGirl.create(:model)* it uses what we define in the factory definition.
+
+#### Sequences
+A sequence automatically increments n inside the block, yielding higher n values for whatever you want to use them for.
+This is essential for uniqueness validations on Models.  You can pass any data that you need
+
+#### .create with custom param values
+```ruby
+FactoryGirl.create(:contact, email: "custom@email.com")
+```
+Just pass a secondary parameter via options hash
+
+#### .build
+
+Instantiates but does not save.
+
+#### Simply Syntax
+
+```ruby
+RSpec.configure do |config|
+  config.include FactoryGirl::Syntax::Methods
+end
+```
+This allows you to write methods from FactoryGirl without typing FactoryGirl
+```ruby
+expect(build(:model)).to be_valid
+
+expect(build(:model, param: nil)).to have(1).errors_on(:param)
+```
+
+#### Associations and inheretance in Factories
+associated factory
+```ruby
+association :model
+# associates the passed model with the defined factory. use like below
+
+FactoryGirl.define do
+  factory :phone do
+    association :contact
+    phone { '123-456-788' }
+    phone_type 'whatevs'
+  end
+end
+```
+inhereted factory -
+allows you to do things like `FactoryGirl.build(:type_model)` for ease of customization
+```ruby
+FactoryGirl.define do
+  factory :phone do
+    association :contact
+    phone { 'whatevs' }
+    
+    factory :home_phone do
+      phone_type 'home'
+    end
+    
+    factory :work_phone do
+      phone_type 'work
+    end
+  end
+end
+```
+
+
+
+
+
+
+
 
 
 
